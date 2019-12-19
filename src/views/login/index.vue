@@ -5,8 +5,8 @@
         <img src="../../assets/img/logo_index.png" alt />
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="myForm">
-        <el-form-item label="手机号码" prop="pnumber">
-          <el-input v-model="ruleForm.pnumber" placeholder="请输入手机号"></el-input>
+        <el-form-item label="手机号码" prop="mobile">
+          <el-input v-model="ruleForm.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item prop="code">
           <el-input placeholder="请输入验证码" class="code" v-model="ruleForm.code"></el-input>
@@ -16,7 +16,7 @@
           <el-checkbox v-model="ruleForm.check">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button @click="login" type="primary" style="width:100%">登录</el-button>
+          <el-button @click="Login" type="primary" style="width:100%">登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -31,13 +31,12 @@ export default {
     }
     return {
       ruleForm: {
-        pnumber: '',
+        mobile: '',
         code: '',
-        check: false,
-        submit: ''
+        check: false
       },
       rules: {
-        pnumber: [
+        mobile: [
           { required: true, message: '请输入手机号码' },
           { pattern: /^1[3456789]\d{9}$/, message: '手机格式不正确' }
         ],
@@ -50,26 +49,19 @@ export default {
     }
   },
   methods: {
-    login () {
-      this.$refs.myForm.validate((isOk) => {
+    Login () {
+      this.$refs.myForm.validate(isOk => {
         if (isOk) {
           // 验证通过
-          this.$axios({
-            url: '/authorizations',
-            method: 'post',
-            data: this.ruleForm // body参数
-          }).then(res => {
-            // 只接收正确结果
+          this.$axios.post('/authorizations', this.ruleForm).then(res => {
             window.localStorage.setItem('user-token', res.data.data.token)
             this.$router.push('/')
-          }).catch(erro => {
+          }).catch(() => {
             this.$message({
               type: 'warning',
               message: '手机号或者验证码错误'
             })
           })
-        } else {
-          console.log('验证不通过')
         }
       })
     }
