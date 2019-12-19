@@ -8,8 +8,8 @@
         <el-form-item label="手机号码" prop="pnumber">
           <el-input v-model="ruleForm.pnumber" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item prop="yzm">
-          <el-input placeholder="请输入验证码" class="yzm" v-model="ruleForm.yzm"></el-input>
+        <el-form-item prop="code">
+          <el-input placeholder="请输入验证码" class="code" v-model="ruleForm.code"></el-input>
           <el-button plain style="float:right">发送验证码</el-button>
         </el-form-item>
         <el-form-item prop="check">
@@ -32,7 +32,7 @@ export default {
     return {
       ruleForm: {
         pnumber: '',
-        yzm: '',
+        code: '',
         check: false,
         submit: ''
       },
@@ -41,7 +41,7 @@ export default {
           { required: true, message: '请输入手机号码' },
           { pattern: /^1[3456789]\d{9}$/, message: '手机格式不正确' }
         ],
-        yzm: [
+        code: [
           { required: true, message: '请输入验证码' },
           { pattern: /^\d{6}$/, message: '验证码格式不正确' }
         ],
@@ -51,9 +51,23 @@ export default {
   },
   methods: {
     login () {
-      this.$refs.myForm.validate(function (isOk) {
+      this.$refs.myForm.validate((isOk) => {
         if (isOk) {
-          console.log('验证通过')
+          // 验证通过
+          this.$axios({
+            url: '/authorizations',
+            method: 'post',
+            data: this.ruleForm // body参数
+          }).then(res => {
+            // 只接收正确结果
+            window.localStorage.setItem('user-token', res.data.data.token)
+            this.$router.push('/')
+          }).catch(erro => {
+            this.$message({
+              type: 'warning',
+              message: '手机号或者验证码错误'
+            })
+          })
         } else {
           console.log('验证不通过')
         }
@@ -78,7 +92,7 @@ export default {
         height: 45px;
       }
     }
-    .yzm {
+    .code {
       width: 65%;
     }
   }
