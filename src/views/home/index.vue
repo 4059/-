@@ -1,5 +1,11 @@
 <template>
-  <div>主页</div>
+  <el-container>
+    <el-aside>左侧</el-aside>
+    <el-container>
+      <el-header>头</el-header>
+      <el-main>主要区域</el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
