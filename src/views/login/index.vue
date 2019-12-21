@@ -56,11 +56,6 @@ export default {
           this.$axios.post('/authorizations', this.ruleForm).then(res => {
             window.localStorage.setItem('user-token', res.data.token)
             this.$router.push('/')
-          }).catch(() => {
-            this.$message({
-              type: 'warning',
-              message: '手机号或者验证码错误'
-            })
           })
         }
       })
