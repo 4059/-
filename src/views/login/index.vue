@@ -54,7 +54,7 @@ export default {
         if (isOk) {
           // 验证通过
           this.$axios.post('/authorizations', this.ruleForm).then(res => {
-            window.localStorage.setItem('user-token', res.data.data.token)
+            window.localStorage.setItem('user-token', res.data.token)
             this.$router.push('/')
           }).catch(() => {
             this.$message({
