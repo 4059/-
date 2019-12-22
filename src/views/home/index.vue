@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside style="width:230px">
+    <el-aside style="width:230px;min-height:100vh;background: #323745;">
       <asided></asided>
     </el-aside>
     <el-container>

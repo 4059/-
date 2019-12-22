@@ -37,9 +37,6 @@ export default {
 
 <style lang="less" scoped>
 .asided{
-  background: #323745;
-  width: 230px;
-  height: 100vh;
   .logo{
     text-align: center;
     background: #2e2f32;
