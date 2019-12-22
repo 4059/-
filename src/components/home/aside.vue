@@ -12,7 +12,7 @@
         <span slot="title">内容管理</span>
         <el-menu-item index="/home/publish">发布文章</el-menu-item>
         <el-menu-item index="/home/articles">文章列表</el-menu-item>
-        <el-menu-item index="/home/articles">评论管理</el-menu-item>
+        <el-menu-item index="/home/commont">评论管理</el-menu-item>
         <el-menu-item index="/home/material">素材管理</el-menu-item>
       </el-submenu>
       <el-submenu index="2">

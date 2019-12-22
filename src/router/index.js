@@ -19,6 +19,10 @@ const routes = [
       {
         path: '',
         component: Home2
+      },
+      {
+        path: 'commont',
+        component: () => import('../views/commont')
       }
     ]
   },
