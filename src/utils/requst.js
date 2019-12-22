@@ -1,6 +1,6 @@
 import axios from 'axios'
 import router from '../router'
-import Message from 'element-ui'
+import { Message } from 'element-ui'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 // 请求拦截器
 axios.interceptors.request.use(function (config) {
