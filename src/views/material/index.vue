@@ -1,8 +1,9 @@
 <template>
-  <el-card>
+  <el-card v-loading="loading">
       <bread-crumb slot="header">
         <template slot="title">素材管理</template>
       </bread-crumb>
+      <el-upload action="" :http-request="upLoad" :show-file-list="false"><el-button size="small" type="primary">点击上传</el-button></el-upload>
       <el-tabs v-model="activeName" @tab-click="changeTab">
           <el-tab-pane label="全部图片" name="all">
               <div class="img-list">
@@ -42,6 +43,7 @@ export default {
   data () {
     return {
       activeName: 'all',
+      loading: false,
       list: [],
       page: {
         total: 0,
@@ -51,6 +53,19 @@ export default {
     }
   },
   methods: {
+    upLoad (params) {
+      this.loading = true
+      let data = new FormData()
+      data.append('image', params.file)
+      this.$axios({
+        method: 'post',
+        url: '/user/images',
+        data
+      }).then(res => {
+        this.getMaterial()
+        this.loading = false
+      })
+    },
     delMaterial (id) {
       this.$confirm('确认删除此图片吗？').then(() => {
         this.$axios({
