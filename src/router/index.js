@@ -27,6 +27,10 @@ const routes = [
       {
         path: 'material',
         component: () => import('../views/material')
+      },
+      {
+        path: 'articles',
+        component: () => import('../views/articles')
       }
     ]
   },
