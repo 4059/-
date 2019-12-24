@@ -23,6 +23,10 @@ const routes = [
       {
         path: 'commont',
         component: () => import('../views/commont')
+      },
+      {
+        path: 'material',
+        component: () => import('../views/material')
       }
     ]
   },

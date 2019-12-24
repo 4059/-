@@ -5,7 +5,7 @@ import jsonBigint from 'json-bigint'
 
 axios.defaults.transformResponse = [
   function (data) {
-    return jsonBigint.parse(data)
+    return data ? jsonBigint.parse(data) : {}
   }
 ]
 
