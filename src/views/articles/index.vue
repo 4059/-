@@ -21,31 +21,40 @@
       </el-form-item>
       <el-form-item label="时间选择">
         <el-date-picker
+          value-format='yyyy-MM-dd'
           v-model="searchForm.dateRange"
           type="daterange"
-          range-separator="——"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>{{ searchForm.value }}
+        ></el-date-picker>
       </el-form-item>
     </el-form>
   </el-card>
   <el-card style="margin-top:10px">
-    <el-row slot="header">共找到0条符合条件的内容</el-row>
-    <div class="art-item" v-for="item in 10" :key="item">
+    <el-row slot="header">共找到{{ page.total }}条符合条件的内容</el-row>
+    <div class="art-item" v-for="item in list" :key="item.id.toString()">
         <div class="left">
-            <img src="./../../assets/img/admire.png" alt="">
+            <img :src="item.cover.images.length ? item.cover.images[0] : defaultImg" alt="">
             <div class="info">
-                <span class="title">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
-                <el-tag class="tag">标签</el-tag>
-                <span class="date">2019</span>
+                <span class="title">{{ item.title }}</span>
+                <el-tag :type="item.status | filterType" class="tag">{{ item.status | filterStatus }}</el-tag>
+                <span class="date">{{ item.pubdate }}</span>
             </div>
         </div>
         <div class="right">
-            <span class="el-icon-edit">修改</span>
-            <span class="el-icon-delete">删除</span>
+            <span ><i class="el-icon-edit"></i>修改</span>
+            <span @click="delArt(item.id)" ><i class="el-icon-delete"></i>删除</span>
         </div>
     </div>
+    <el-row type="flex" justify="center" >
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :current-page="page.currentPage"
+            :page-size="page.pageSize"
+            :total="page.total"
+            @current-change = "changePage"
+            >
+          </el-pagination>
+        </el-row>
   </el-card>
 </div>
 </template>
@@ -59,20 +68,106 @@ export default {
         channel_id: null,
         dateRange: []
       },
-      channels: [] // 接收频道数据
+      page: {
+        total: 0,
+        pageSize: 10, // 限制最少10条
+        currentPage: 1
+      },
+      channels: [], // 接收频道数据
+      list: [], // 接收主体数据
+      defaultImg: require('./../../assets/img/admire.png')
+    }
+  },
+  filters: {
+    filterType (value) {
+      switch (value) {
+        case 0:
+          return 'warning'
+        case 1:
+          return 'info'
+        case 2:
+          return ''
+        case 3:
+          return 'danger'
+      }
+    },
+    filterStatus (value) {
+      switch (value) {
+        case 0:
+          return '草稿'
+        case 1:
+          return '待审核'
+        case 2:
+          return '已发表'
+        case 3:
+          return '审核失败'
+      }
+    }
+  },
+  watch: {
+    searchForm: {
+      handler: function () {
+        this.changeCondition()
+      },
+      deep: true
     }
   },
   methods: {
+    delArt (id) {
+      this.$confirm('是否删除文章？').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/articles/${id.toString()}`
+        }).then(res => {
+          // 添加提示消息
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          // 是否回到第一页看需求，添加页码赋值1
+          this.getArticles()
+        })
+      }).catch(() => {})
+    },
+    changePage (newPage) {
+      this.page.currentPage = newPage
+      this.getConditionArtcles()
+    },
+    changeCondition () {
+      this.page.currentPage = 1
+      this.getConditionArtcles()
+    },
+    getConditionArtcles () {
+      let params = {
+        page: this.page.currentPage,
+        per_page: this.page.pageSize,
+        status: this.searchForm.status === 5 ? null : this.searchForm.status,
+        channel_id: this.searchForm.channel_id,
+        begin_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length ? this.searchForm.dateRange[0] : null,
+        end_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
+      }
+      this.getArticles(params)
+    },
     getChannels () {
       this.$axios({
         url: '/channels'
       }).then(res => {
         this.channels = res.data.channels
       })
+    },
+    getArticles (params) {
+      this.$axios({
+        url: '/articles',
+        params
+      }).then(res => {
+        this.list = res.data.results
+        this.page.total = res.data.total_count // 获取总文章数
+      })
     }
   },
   created () {
     this.getChannels() // 获取频道
+    this.getArticles({ page: 1, per_page: 10 }) // 获取主体数据
   }
 }
 </script>
@@ -116,6 +211,7 @@ export default {
     .right {
         span {
             margin-right: 10px;
+            cursor: pointer;
         }
     }
 }
