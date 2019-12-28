@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="right">
-            <span ><i class="el-icon-edit"></i>修改</span>
+            <span @click="toMiify(item.id)"><i class="el-icon-edit"></i>修改</span>
             <span @click="delArt(item.id)" ><i class="el-icon-delete"></i>删除</span>
         </div>
     </div>
@@ -113,6 +113,9 @@ export default {
     }
   },
   methods: {
+    toMiify (id) {
+      this.$router.push(`/home/publish/${id.toString()}`)
+    },
     delArt (id) {
       this.$confirm('是否删除文章？').then(() => {
         this.$axios({
