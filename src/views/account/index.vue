@@ -21,7 +21,7 @@
           <el-button type="primary" @click="saveUser">保存信息</el-button>
         </el-form-item>
       </el-form>
-        <el-upload class="tou" action="" :show-file-list="false">
+        <el-upload :http-request="uploadImg" class="tou" action="" :show-file-list="false">
         <img :src="formData.photo ? formData.photo : defaultImg" alt="">
         </el-upload>
       </div>
@@ -48,6 +48,17 @@ export default {
     }
   },
   methods: {
+    uploadImg (params) {
+      let data = new FormData()
+      data.append('photo', params.file)
+      this.$axios({
+        url: '/user/photo',
+        method: 'patch',
+        data
+      }).then(res => {
+        this.formData.photo = res.data.photo
+      })
+    },
     saveUser () {
       this.$refs.myForm.validate().then(res => {
         this.$axios({
@@ -87,14 +98,10 @@ margin-top: 30px;
   text-align: center;
 }
 .tou {
+  img {
   width: 200px;
   height: 200px;
-  border: 1px solid #000;
-  overflow: hidden;
   border-radius: 50%;
-  img {
-    width: 100%;
-    height: 100%;
   }
 }
 }
