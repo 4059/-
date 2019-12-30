@@ -5,9 +5,7 @@
   </div>
   <!-- :router="ture" 完整写法 -->
   <el-menu router background-color="#323745" text-color="#adafb5">
-      <el-menu-item>
-        <span slot="title" index="/home">首页</span>
-      </el-menu-item>
+      <el-menu-item index="/home">首页</el-menu-item>
       <el-submenu index="1">
         <span slot="title">内容管理</span>
         <el-menu-item index="/home/publish">发布文章</el-menu-item>
@@ -22,9 +20,7 @@
         <el-menu-item index="/home/fanspic">粉丝画像</el-menu-item>
         <el-menu-item index="/home/fanslist">粉丝列表</el-menu-item>
       </el-submenu>
-      <el-menu-item>
-        <span slot="title" index="/home/userinfo">账户信息</span>
-      </el-menu-item>
+      <el-menu-item index="/home/account">账户信息</el-menu-item>
   </el-menu>
 </div>
 </template>

@@ -11,13 +11,15 @@
             <quill-editor v-model="formData.content" style="height:300px"></quill-editor>
           </el-form-item>
           <el-form-item style="margin-top:120px" prop="cover" label="封面">
-            <el-radio-group v-model="formData.cover.type">
+            <el-radio-group @change="changeType" v-model="formData.cover.type">
               <el-radio :label="1">单图</el-radio>
               <el-radio :label="3">三图</el-radio>
               <el-radio :label="0">无图</el-radio>
               <el-radio :label="-1">自动</el-radio>
             </el-radio-group>
           </el-form-item>
+          <!-- 封面组件 -->
+          <cover-image @selectOneImg='receiveImg' :list='formData.cover.images'></cover-image>
           <el-form-item prop="channel_id" label="频道">
               <el-select v-model="formData.channel_id">
                 <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -53,6 +55,11 @@ export default {
     }
   },
   methods: {
+    receiveImg (url, index) {
+      // 此时虽然拿到了路径和数组下标，但是不能直接用数组[下标]的方式去赋值，
+      // vue不能检测：  利用数组下标直接设置一个值，更改数组的length
+      this.formData.cover.images = this.formData.cover.images.map((item, i) => i === index ? url : item)
+    },
     getChannels () {
       this.$axios({
         url: '/channels'
@@ -87,6 +94,15 @@ export default {
       }).then(res => {
         this.formData = res.data
       })
+    },
+    changeType () {
+      if (this.formData.cover.type === 0 || this.formData.cover.type === -1) {
+        this.formData.cover.images = []
+      } else if (this.formData.cover.type === 1) {
+        this.formData.cover.images = ['']
+      } else if (this.formData.cover.type === 3) {
+        this.formData.cover.images = ['', '', '']
+      }
     }
   },
   watch: {
