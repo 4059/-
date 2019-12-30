@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import eventBus from './../../utils/eventBus'
 export default {
   data () {
     return {
@@ -57,6 +58,7 @@ export default {
         data
       }).then(res => {
         this.formData.photo = res.data.photo
+        eventBus.$emit('updateUser')
       })
     },
     saveUser () {
@@ -70,6 +72,7 @@ export default {
             type: 'success',
             message: '保存用户信息成功'
           })
+          eventBus.$emit('updateUser')
         })
       })
       // 支持promise写法和回调函数写法

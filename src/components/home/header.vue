@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import eventBus from './../../utils/eventBus'
 export default {
   data () {
     return {
@@ -40,13 +41,19 @@ export default {
         localStorage.removeItem('user-token')
         this.$router.push('/login')
       }
+    },
+    getInfo () {
+      this.$axios({
+        url: '/user/profile'
+      }).then(res => {
+        this.userInfo = res.data
+      })
     }
   },
   created () {
-    this.$axios({
-      url: '/user/profile'
-    }).then(res => {
-      this.userInfo = res.data
+    this.getInfo()
+    eventBus.$on('updateUser', () => {
+      this.getInfo()
     })
   }
 }
